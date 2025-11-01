@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>甜蜜弹窗</title>
+<style>
+  body {
+    background-color: #fffafc;
+    font-family: "Microsoft YaHei", sans-serif;
+    overflow: hidden;
+  }
+  .popup {
+    position: absolute;
+    width: 260px; /* 增加宽度 */
+    padding: 15px 25px;
+    border-radius: 15px;
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    text-align: center;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .popup small {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #666;
+  }
+  #control {
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffccd5;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 9999;
+  }
+  button {
+    background-color: #ff6b81;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div id="control">
+  <span>控制台 </span><br>
+  <button id="stopBtn">停止</button>
+</div>
+
+<script>
+const messages = [
+  "我想你了",
+  "记得喝水",
+  "我爱你",
+  "早点休息",
+  "多笑笑呀",
+  "抱抱～"
+];
+
+const colors = ["#CCFFFF","#CCFFCC","#FFCCCC","#FFFFCC","#E0CCFF","#CCE5FF","#FFD9E6"];
+
+let running = true;
+let interval = 80; 
+
+function createPopup() {
+  if (!running) return;
+
+  const div = document.createElement("div");
+  div.className = "popup";
+  div.innerHTML = `
+    ${messages[Math.floor(Math.random()*messages.length)]}
+    <small>— 来自：JK</small>
+  `;
+
+  div.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+
+  // 控制弹窗不出现在控制台上方
+  const controlHeight = document.getElementById("control").offsetHeight + 40;
+  const maxTop = window.innerHeight - 120;
+  const minTop = controlHeight;
+  const top = Math.random() * (maxTop - minTop) + minTop;
+
+  div.style.left = Math.random() * (window.innerWidth - 260) + "px";
+  div.style.top = top + "px";
+
+  document.body.appendChild(div);
+
+  // 弹窗轻微动画效果
+  div.style.opacity = 0;
+  setTimeout(() => {
+    div.style.opacity = 1;
+    div.style.transform = "scale(1.1)";
+  }, 50);
+}
+
+function loop() {
+  if (running) {
+    createPopup();
+    setTimeout(loop, interval);
+  }
+}
+
+document.getElementById("stopBtn").onclick = () => {
+  running = false;
+  alert("弹窗已停止～");
+};
+
+loop();
+</script>
+
+</body>
+</html>
